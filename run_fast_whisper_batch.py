@@ -1,9 +1,11 @@
 import time
-import whisper
+from faster_whisper import WhisperModel
 
 audio = "./Audio/01.wav"
 
+# (Label you’ll see in the logs, model name for faster-whisper)
 models = [
+    # ("turbo",   "deepdml/faster-whisper-large-v3-turbo-ct2"),
     ("turbo",   "turbo"),
     ("large-v3","large-v3"),
     ("medium",  "medium"),
@@ -19,28 +21,32 @@ for label, model_name in models:
 
     # load model
     load_start = time.perf_counter()
-    model = whisper.load_model(model_name, device="cpu")   # keep "cpu" on your Mac
+    model = WhisperModel(model_name, device="cpu")   # keep "cpu" on your Mac
     load_time = time.perf_counter() - load_start
     print(f"Model load time: {load_time:.2f} seconds")
 
     # transcribe
     start = time.perf_counter()
-    ts = model.transcribe(audio, fp16=False)
-    print(ts["text"])
+    segments, info = model.transcribe(audio, language="en")
+    # print(ts["text"])
     transcribe_time = time.perf_counter() - start
 
+    # collect text
+    text = "".join(segment.text for segment in segments)
+
     # save transcript
-    out_path = f"./Whisper_outputs/{label}/01.txt"
+    out_path = f"./Whisper_outputs/{label}/fast-01.txt"
     with open(out_path, "w", encoding="utf-8") as f:
-        f.write(ts["text"])
+        f.write(text)
 
     # print quick summary
     print(f"Transcription time: {transcribe_time:.2f} seconds")
     print(f"Approx. real-time factor (for 60s audio): {transcribe_time/60:.2f}x")
-    print(f"Detected language: {ts['language']}")
-    print(f"Transcript preview:\n{ts['text'][:300]}...\n")
+    print(f"Detected language: {info.language}"
+           f"(p={info.language_probability:.2f})")
+    print(f"Transcript preview:\n{text[:300]}...\n")
 
-    results.append((label, load_time, transcribe_time, len(ts["text"])))
+    results.append((label, load_time, transcribe_time, len(text)))
 
 print("\n================ SUMMARY ================")
 for label, load_t, trans_t, length in results:

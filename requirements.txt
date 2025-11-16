@@ -96,7 +96,7 @@ thinc==8.3.4
 threadpoolctl==3.6.0
 tiktoken==0.12.0
 tokenizers==0.21.1
-torch==2.7.0
+torch==2.8.0
 tqdm==4.67.1
 transformers==4.52.3
 typer==0.15.2
