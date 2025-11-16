@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Convert all MP4 files in /Video to WAV files in /Audio
 
-SRC_DIR="Video"
+SRC_DIR="Video/output_clips"
 OUT_DIR="Audio"
 
 mkdir -p "$OUT_DIR"

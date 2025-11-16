@@ -1,7 +1,7 @@
 import time
 from faster_whisper import WhisperModel
 
-audio = "./Audio/01.wav"
+audio = "./Audio/01_first60.wav"
 
 # (Label you’ll see in the logs, model name for faster-whisper)
 models = [
