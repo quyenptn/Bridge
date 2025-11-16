@@ -1,0 +1,15 @@
+# Ignore audio and video files
+Audio/
+Video/
+
+# Ignore output files
+Whisper_outputs/
+
+# Ignore environment files
+.venv/
+.vscode/
+.DS_Store
+
+# Ignore miscellaneous files
+*.docx
+*.pdf
