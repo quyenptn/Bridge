@@ -9,7 +9,7 @@ mkdir -p "$OUT_DIR"
 echo "Scanning $SRC_DIR for .mp4 files..."
 
 found=0
-for src in "$SRC_DIR"/*.mp4; do
+for src in "$SRC_DIR"/55_first60.mp4; do
 	# If the pattern didn't match any files, skip
 	[ -e "$src" ] || continue
 	found=1

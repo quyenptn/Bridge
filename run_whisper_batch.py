@@ -1,7 +1,7 @@
 import time
 import whisper
 
-audio = "./Audio/01_first60.wav"
+audio = "./Audio/55_first60.wav"
 
 models = [
     ("turbo",   "turbo"),

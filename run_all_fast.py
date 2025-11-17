@@ -1,7 +1,7 @@
 import os
 import time
 import csv
-import whisper
+from faster_whisper import WhisperModel
 
 # ===== CONFIG =====
 AUDIO_DIR = "./Audio"
@@ -34,7 +34,7 @@ for f in audio_files:
     print("  •", f)
     
 # CSV file setup
-csv_path = os.path.join(OUTPUT_ROOT, "run_summary.csv")
+csv_path = os.path.join(OUTPUT_ROOT, "run_summary_fast.csv")
 csv_header = [
     "audio_file", "model", "load_time",
     "transcribe_time", "duration",
@@ -51,7 +51,7 @@ for label, model_name in models:
     print("="*60)
 
     start = time.perf_counter()
-    model = whisper.load_model(model_name, device="cpu")
+    model = WhisperModel(model_name, device="cpu")
     load_time = time.perf_counter() - start
 
     print(f"Loaded {label} in {load_time:.2f}s")
@@ -67,11 +67,14 @@ for label, model_name in models:
         
         # Transcribe
         start = time.perf_counter()
-        ts = model.transcribe(audio_path, fp16=False)
+        # ts = model.transcribe(audio_path, fp16=False)
+        segments, info = model.transcribe(audio_path, language="en")
         transcribe_time = time.perf_counter() - start
+        
+        text = "".join(segment.text for segment in segments)
 
         # Estimate audio duration from last segment
-        segments = ts.get("segments", [])
+        # segments = ts.get("segments", [])
         if segments:
             duration = segments[-1]["end"]
         else:
@@ -84,9 +87,9 @@ for label, model_name in models:
         out_dir = os.path.join(OUTPUT_ROOT, label)
         os.makedirs(out_dir, exist_ok=True)
 
-        out_txt_path = os.path.join(out_dir, f"{base_name}.txt")
+        out_txt_path = os.path.join(out_dir, f"{base_name}_fast.txt")
         with open(out_txt_path, "w", encoding="utf-8") as f:
-            f.write(ts["text"])
+            f.write(text)
 
         print(f"→ Transcription time: {transcribe_time:.2f}s")
         print(f"→ Duration: {duration:.2f}s")
@@ -100,7 +103,7 @@ for label, model_name in models:
             f"{transcribe_time:.4f}",
             f"{duration:.4f}",
             f"{rt_factor:.4f}",
-            str(len(ts["text"]))
+            str(len(text))
         ])
         
     # loaded_models[label] = (model, load_time)

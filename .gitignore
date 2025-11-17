@@ -4,6 +4,7 @@ Video/
 
 # Ignore output files
 Whisper_outputs/
+WhisperTS_outputs/
 
 # Ignore environment files
 .venv/
