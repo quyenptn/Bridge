@@ -1,6 +1,7 @@
 # Ignore audio and video files
 Audio/
 Video/
+transcript/*_first60.txt
 
 # Ignore output files
 Whisper_outputs/
